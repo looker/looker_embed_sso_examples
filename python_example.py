@@ -80,7 +80,7 @@ def test():
   user = User(57,
               first_name='Embed Wil',
               last_name='Krouse',
-              permissions=['see_dashboards', 'access_data'],
+              permissions=['see_lookml_dashboards', 'access_data'],
               models=['wilg_thelook'],
               access_filters={'fake_model': {'id': 1}})
 
