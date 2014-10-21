@@ -19,7 +19,7 @@ public class LookerBoxeverEmbedClient {
         String externalUserID = "\"57\"";  // converted to JSON string
         String firstName = "\"Embed Steve\""; // converted to JSON string
         String lastName = "\"Krouse\""; // converted to JSON string
-        String permissions = "[\"see_dashboards\",\"access_data\",\"see_looks\"]"; // converted to JSON array
+        String permissions = "[\"see_user_dashboards\", \"see_lookml_dashboards\",\"access_data\",\"see_looks\"]"; // converted to JSON array
         String models = "[\"thelook\"]"; // converted to JSON array
         String sessionLength = "900";
         String embedURL = "/embed/sso/dashboards/3";
