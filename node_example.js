@@ -80,7 +80,7 @@ function sample() {
         external_user_id: '57',
         first_name: 'Embed Steve',
         last_name: 'Krouse',
-        permissions: ['see_dashboards', 'access_data', 'see_looks'],
+        permissions: ['see_user_dashboards', 'see_lookml_dashboards', 'access_data', 'see_looks'],
         models: ['thelook'],
         access_filters: {
             fake_model: {
