@@ -29,20 +29,13 @@ module LookerEmbedClient
     json_nonce              = SecureRandom.hex(16).to_json
 
     # compute signature
-    string_to_sign  = ""
-    string_to_sign += host                  + "\n"
-    string_to_sign += embed_path            + "\n"
-    string_to_sign += json_nonce            + "\n"
-    string_to_sign += json_time             + "\n"
-    string_to_sign += json_session_length   + "\n"
-    string_to_sign += json_external_user_id + "\n"
-    string_to_sign += json_permissions      + "\n"
-    string_to_sign += json_models           + "\n"
-    string_to_sign += json_access_filters
+    string_to_sign  = [host, embed_path, json_nonce, json_time,
+                       json_session_length, json_external_user_id, json_permissions,
+                       json_models, json_access_filters].join("\n")
 
     signature = Base64.encode64(
                    OpenSSL::HMAC.digest(
-                      OpenSSL::Digest::Digest.new('sha1'),
+                      OpenSSL::Digest.new('sha1'),
                       secret,
                       string_to_sign.force_encoding("utf-8"))).strip
 
@@ -60,7 +53,7 @@ module LookerEmbedClient
       force_logout_login:  json_force_logout_login,
       signature:           signature
     }
-    query_string = query_params.to_a.map { |key, val| "#{key}=#{CGI.escape(val)}" }.join('&')
+    query_string = URI.encode_www_form(query_params)
 
     "#{host}#{embed_path}?#{query_string}"
   end
