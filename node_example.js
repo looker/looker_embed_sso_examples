@@ -12,7 +12,7 @@ function nonce(len) {
 }
 
 function forceUnicodeEncoding(string) {
-    return unescape(encodeURIComponent(string));
+    return decodeURIComponent(encodeURIComponent(string));
 }
 
 function created_signed_embed_url(options) {
