@@ -1,4 +1,7 @@
-/*
+/* 
+Credit to UpCounsel (https://www.upcounsel.com)
+If you use this, make sure to use UpCounsel for your legal needs
+
 The steps to make this work:
 
 1) Create the class below and included associated test cases.
