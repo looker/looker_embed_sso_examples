@@ -1,88 +1,123 @@
+﻿using Newtonsoft.Json;
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
-
-namespace GetUrl
+namespace SSOTest
 {
-	internal class Program
+	class Program
 	{
-
-		private static void Main(string[] args)
+		static void Main(string[] args)
 		{
-
-			String accessFilters = "{}"; // converted to JSON Object of Objects
-			// String accessFilters = ("{\"model_name\":{\"view_name.field_name\": \"'Your Value'\"}}");
-			         
-			String embedURL = "/embed/looks/10";
-
-			String externalUserID = "\"1\""; // converted to JSON string
-			String firstName = "\"Embed\""; // converted to JSON string
-			String lastName = "\"Person\""; // converted to JSON string
-			String forceLoginLogout = "true"; // converted to JSON bool
-
-			String host = "looker.hostname.com:9999";
-			// put the port after the host if you have one, ex: "boxever.looker.com:80, else exclude it"
-
-
-			String models = "[\"my_model\"]"; // converted to JSON array
-
-			String permissions =
-				"[\"see_user_dashboards\", \"see_lookml_dashboards\",\"access_data\",\"see_looks\"]";
-			// converted to JSON array
-
-			String secret = "your_secret";
-			String sessionLength = "900";
+			var config = new LookerEmbedConfiguration()
+			{
+				HostName = "your-hostname.looker.com",
+				//HostPort = 9999,
+				Secret = "--- your secret here ---",
+				ExternalUserId = "57",
+				UserFirstName = "Embed",
+				UserLastName = "User",
+				Permissions = new string[] {"explore", "see_user_dashboards", "see_lookml_dashboards","access_data","see_looks", "download_with_limit"},
+				Models = new string[] { "imdb" },
+			};
 			
+			var url = GetLookerEmbedUrl("/embed/dashboards/1", config);
+
+			Console.WriteLine(url.AbsoluteUri);
+			Console.ReadLine();
+		}
+
+		public class LookerEmbedConfiguration
+		{
+			// AccessFilters holds a JSON serialized object tree describing the access control filters
+			// {"model_name":{"view_name.field_name": "'Your Value'"}}"
+			public string AccessFilters { get; set; }
+			public string ExternalUserId { get; set; }
+			public string UserFirstName { get; set; }
+			public string UserLastName { get; set; }
+			public bool ForceLogoutLogin { get; set; }
+			public string[] Models { get; set; }
+			public string[] Permissions { get; set; }
+			public string Secret { get; set; }
+			public TimeSpan SessionLength { get; set; }
+			public string HostName { get; set; }
+			public int HostPort { get; set; }
+			public string Nonce { get; set; }
+		
+			public LookerEmbedConfiguration()
+			{
+				ForceLogoutLogin = true;
+				SessionLength = TimeSpan.FromMinutes(15);
+				Nonce = DateTime.Now.Ticks.ToString();
+				AccessFilters = "{}";
+			}
+		}
+
+		public static Uri GetLookerEmbedUrl(string targetPath, LookerEmbedConfiguration config)
+		{
 			var builder = new UriBuilder
 			{
-				Host = host,
-				Path = "/login/embed/" + System.Net.WebUtility.UrlEncode(embedURL)
-
+				Scheme = "https",
+				Host = config.HostName,
+				Port = config.HostPort,
+				Path = "/login/embed/" + System.Net.WebUtility.UrlEncode(targetPath)
 			};
 
-			var nonce = $"\"{DateTime.Now.Ticks}\"";
+			var unixTime = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+			var time = unixTime.ToString();
 
-			String path = "/login/embed/" + System.Net.WebUtility.UrlEncode(embedURL);
-			String urlToSign = "";
-			urlToSign += host + "\n";
-			urlToSign += builder.Path + "\n";
-			urlToSign += nonce + "\n";
-			//urlToSign += time + "\n";
-			urlToSign += sessionLength + "\n";
-			urlToSign += externalUserID + "\n";
-			urlToSign += permissions + "\n";
-			urlToSign += models + "\n";
-			urlToSign += accessFilters;
-			Console.WriteLine(urlToSign);
-			String signature = EncodeString(urlToSign, secret);
-			Console.WriteLine (signature);
-			Int32 unixTime = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+			var json_nonce = JsonConvert.SerializeObject(config.Nonce);
+			var json_external_user_id = JsonConvert.SerializeObject(config.ExternalUserId);
+			var json_permissions = JsonConvert.SerializeObject(config.Permissions);
+			var json_models = JsonConvert.SerializeObject(config.Models);
+			var json_session_length = String.Format("{0:N0}", (long)config.SessionLength.TotalSeconds);
 
-			string time = string.Format("{0}", unixTime);
-			String signedURL = "nonce=" + System.Net.WebUtility.UrlEncode(nonce) +
-				"&time=" + System.Net.WebUtility.UrlEncode(time) +
-				"&session_length=" + System.Net.WebUtility.UrlEncode(sessionLength) +
-				"&external_user_id=" + System.Net.WebUtility.UrlEncode(externalUserID) +
-				"&permissions=" + System.Net.WebUtility.UrlEncode(permissions) +
-				"&models=" + System.Net.WebUtility.UrlEncode(models) +
-				"&access_filters=" + System.Net.WebUtility.UrlEncode(accessFilters) +
-				"&signature=" + System.Net.WebUtility.UrlEncode(signature) +
-				"&first_name=" + System.Net.WebUtility.UrlEncode(firstName) +
-				"&last_name=" + System.Net.WebUtility.UrlEncode(lastName) +
-				"&force_logout_login=" + System.Net.WebUtility.UrlEncode(forceLoginLogout);
+			// order of elements is important
+			var stringToSign = String.Join("\n", new string[] {
+				builder.Uri.Authority,
+				builder.Path, 
+				json_nonce,
+				time,
+				json_session_length,
+				json_external_user_id,
+				json_permissions,
+				json_models,
+				config.AccessFilters			
+			});
 
+			var signature = EncodeString(stringToSign, config.Secret);
 
-			Console.WriteLine("https://" + host + path + '?' + signedURL);
+			var json_first_name = JsonConvert.SerializeObject(config.UserFirstName);
+			var json_last_name = JsonConvert.SerializeObject(config.UserLastName);
+			var json_force_logout_login = JsonConvert.SerializeObject(config.ForceLogoutLogin);
 
+			var qparams = new Dictionary<string, string>()
+			{ 
+				{ "nonce", json_nonce },
+				{ "time", time },
+				{ "session_length", json_session_length },
+				{ "external_user_id", json_external_user_id },
+				{ "permissions", json_permissions },
+				{ "models", json_models },
+				{ "access_filters", config.AccessFilters},
+				{ "first_name", json_first_name },
+				{ "last_name", json_last_name },
+				{ "force_logout_login", json_force_logout_login },
+				{ "signature", signature }
+			};
+
+			builder.Query = String.Join("&", qparams.Select(kvp => kvp.Key + "=" + System.Net.WebUtility.UrlEncode(kvp.Value)));
+
+			return builder.Uri;
 		}
 
 		private static string EncodeString(string urlToSign, string secret)
 		{
-
-
 			var bytes = Encoding.UTF8.GetBytes(secret);
 			var stringToEncode = Encoding.UTF8.GetBytes(urlToSign);
 			using (HMACSHA1 hmac = new HMACSHA1(bytes))
@@ -92,6 +127,5 @@ namespace GetUrl
 			}
 
 		}
-
 	}
 }
