@@ -21,6 +21,7 @@ public class LookerBoxeverEmbedClient {
         String lastName = "\"Krouse\""; // converted to JSON string
         String permissions = "[\"see_user_dashboards\", \"see_lookml_dashboards\",\"access_data\",\"see_looks\"]"; // converted to JSON array
         String models = "[\"thelook\"]"; // converted to JSON array
+        String groupIds = "[5, 3]"; // converted to JSON array, can be set to null (value, not JSON) for no groups
         String sessionLength = "900";
         String embedURL = "/embed/sso/dashboards/3";
         String forceLoginLogout = "true"; // converted to JSON bool
@@ -28,7 +29,8 @@ public class LookerBoxeverEmbedClient {
 
         try {
 
-            String url = createURL(host, secret, externalUserID, firstName, lastName, permissions, models, sessionLength, accessFilters, embedURL, forceLoginLogout);
+            String url = createURL(host, secret, externalUserID, firstName, lastName, permissions, models,
+                                   sessionLength, groupIds, accessFilters, embedURL, forceLoginLogout);
             System.out.println("https://" + url);
 
         } catch(Exception e){
@@ -38,7 +40,7 @@ public class LookerBoxeverEmbedClient {
 
     public static String createURL(String host, String secret,
                                    String userID, String firstName, String lastName, String userPermissions,
-                                   String userModels, String sessionLength, String accessFilters,
+                                   String userModels, String sessionLength, String groupIds, String accessFilters,
                                    String embedURL, String forceLoginLogout) throws Exception {
 
         String path = "/login/embed/" + java.net.URLEncoder.encode(embedURL, "ISO-8859-1");
@@ -50,6 +52,7 @@ public class LookerBoxeverEmbedClient {
         String nonce = "\"" + (new BigInteger(130, random).toString(32)) + "\"";  // converted to JSON string
         String time = Long.toString(cal.getTimeInMillis() / 1000L);
 
+        // Order of these here is very important!
         String urlToSign = "";
         urlToSign += host + "\n";
         urlToSign += path + "\n";
@@ -59,6 +62,7 @@ public class LookerBoxeverEmbedClient {
         urlToSign += userID + "\n";
         urlToSign += userPermissions + "\n";
         urlToSign += userModels + "\n";
+        urlToSign += groupIds + "\n";
         urlToSign += accessFilters;
 
         String signature =  encodeString(urlToSign, secret);
@@ -74,6 +78,7 @@ public class LookerBoxeverEmbedClient {
                 "&signature="          + java.net.URLEncoder.encode(signature, "ISO-8859-1") +
                 "&first_name="         + java.net.URLEncoder.encode(firstName, "ISO-8859-1") +
                 "&last_name="          + java.net.URLEncoder.encode(lastName, "ISO-8859-1") +
+                "&group_ids="          + java.net.URLEncoder.encode(groupIds, "ISO-8859-1") +
                 "&force_logout_login=" + java.net.URLEncoder.encode(forceLoginLogout, "ISO-8859-1");
 
         return host + path + '?' + signedURL;

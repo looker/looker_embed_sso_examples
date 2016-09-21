@@ -17,6 +17,7 @@ module LookerEmbedClient
     json_last_name          = options[:last_name].to_json
     json_permissions        = options[:permissions].to_json
     json_models             = options[:models].to_json
+    json_group_ids          = options[:group_ids].to_json
     json_access_filters     = options[:access_filters].to_json
 
     # url/session specific options
@@ -31,7 +32,7 @@ module LookerEmbedClient
     # compute signature
     string_to_sign  = [host, embed_path, json_nonce, json_time,
                        json_session_length, json_external_user_id, json_permissions,
-                       json_models, json_access_filters].join("\n")
+                       json_models, json_group_ids, json_access_filters].join("\n")
 
     signature = Base64.encode64(
                    OpenSSL::HMAC.digest(
@@ -47,6 +48,7 @@ module LookerEmbedClient
       external_user_id:    json_external_user_id,
       permissions:         json_permissions,
       models:              json_models,
+      group_ids:           json_group_ids,
       access_filters:      json_access_filters,
       first_name:          json_first_name,
       last_name:           json_last_name,
@@ -70,6 +72,7 @@ def sample
                last_name:          'Krouse',
                permissions:        ['see_user_dashboards', 'see_lookml_dashboards', 'access_data', 'see_looks'],
                models:             ['wilg_thelook'],
+               group_ids:          [5, 2],
                access_filters:     {:fake_model => {:id => 1}},
                session_length:     fifteen_minutes,
                embed_url:          "/embed/sso/dashboards/1",

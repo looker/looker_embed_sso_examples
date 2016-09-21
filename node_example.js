@@ -26,6 +26,7 @@ function created_signed_embed_url(options) {
     var json_last_name = JSON.stringify(options.last_name);
     var json_permissions = JSON.stringify(options.permissions);
     var json_models = JSON.stringify(options.models);
+    var json_group_ids = JSON.stringify(options.group_ids);
     var json_access_filters = JSON.stringify(options.access_filters);
 
     // url/session specific options
@@ -47,6 +48,7 @@ function created_signed_embed_url(options) {
     string_to_sign += json_external_user_id + "\n";
     string_to_sign += json_permissions + "\n";
     string_to_sign += json_models + "\n";
+    string_to_sign += json_group_ids + "\n";
     string_to_sign += json_access_filters;
 
     var signature = crypto.createHmac('sha1', secret).update(forceUnicodeEncoding(string_to_sign)).digest('base64').trim();
@@ -62,6 +64,7 @@ function created_signed_embed_url(options) {
         access_filters: json_access_filters,
         first_name: json_first_name,
         last_name: json_last_name,
+        group_ids: json_group_ids,
         force_logout_login: json_force_logout_login,
         signature: signature
     };
@@ -80,6 +83,7 @@ function sample() {
         external_user_id: '57',
         first_name: 'Embed Steve',
         last_name: 'Krouse',
+        group_ids: [4],
         permissions: ['see_user_dashboards', 'see_lookml_dashboards', 'access_data', 'see_looks'],
         models: ['thelook'],
         access_filters: {
