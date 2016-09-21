@@ -16,7 +16,7 @@ $json_first_name = json_encode("<first_name>");
 $json_last_name = json_encode("<last_name>");
 $json_permissions = json_encode( array ( "see_user_dashboards", "see_lookml_dashboards", "access_data", "see_looks" ) );
 $json_models = json_encode( array ( <your_model_name> ) );
-$json_group_ids = json_encode( array ( 1, 2 ) );
+$json_group_ids = json_encode( array ( <group_id_1>, <group_id_2> ) );
 $accessfilters = array (
   <your_model_name>  =>  array ( "view_name.dimension_name" => <value> )
 );
