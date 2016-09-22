@@ -86,6 +86,7 @@ def test():
               last_name='Krouse',
               permissions=['see_lookml_dashboards', 'access_data'],
               models=['wilg_thelook'],
+              group_ids=[5,4],
               access_filters={'fake_model': {'id': 1}})
 
   fifteen_minutes = 15 * 60
@@ -93,3 +94,6 @@ def test():
   url = URL(looker, user, fifteen_minutes, "/embed/sso/dashboards/wilg_thelook/1_business_pulse?date=Last+90+Days", force_logout_login=True)
 
   print "https://" + url.to_string()
+
+
+test()
