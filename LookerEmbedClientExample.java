@@ -1,16 +1,14 @@
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.binary.Base64;
-
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-public class LookerBoxeverEmbedClient {
+public class LookerEmbedClientExample {
 
     public static void main(String [] args){
 
@@ -90,7 +88,7 @@ public class LookerBoxeverEmbedClient {
         SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "HmacSHA1");
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(signingKey);
-        byte[] rawHmac = Base64.encodeBase64(mac.doFinal(stringToEncode.getBytes("UTF-8")));
+        byte[] rawHmac = Base64.getEncoder().encode(mac.doFinal(stringToEncode.getBytes("UTF-8")));
         return new String(rawHmac, "UTF-8");
     }
 }
