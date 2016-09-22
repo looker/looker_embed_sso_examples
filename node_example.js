@@ -26,7 +26,7 @@ function created_signed_embed_url(options) {
     var json_last_name = JSON.stringify(options.last_name);
     var json_permissions = JSON.stringify(options.permissions);
     var json_models = JSON.stringify(options.models);
-    var json_group_ids = JSON.stringify(options.group_ids);
+    var json_group_ids = JSON.stringify(options.group_ids || []);
     var json_access_filters = JSON.stringify(options.access_filters);
 
     // url/session specific options
@@ -100,10 +100,11 @@ function sample() {
     return "https://" + url;
 }
 
+var url = sample();
+console.log('Created url: ' + url);
 var http = require('http');
 http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/html'});
-  var url = sample();
   res.end("<a href='" + url + "'>" + url + "</a>");
 }).listen(1337, '127.0.0.1');
 console.log('Server running at http://127.0.0.1:1337/');
