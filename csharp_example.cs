@@ -24,6 +24,7 @@ namespace SSOTest
 				UserLastName = "User",
 				Permissions = new string[] {"explore", "see_user_dashboards", "see_lookml_dashboards","access_data","see_looks", "download_with_limit"},
 				Models = new string[] { "imdb" },
+				GroupIds = new int[] {4, 2},
 			};
 
 			var url = GetLookerEmbedUrl("/embed/dashboards/1", config);
