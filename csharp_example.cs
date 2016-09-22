@@ -42,6 +42,7 @@ namespace SSOTest
 			public string UserLastName { get; set; }
 			public bool ForceLogoutLogin { get; set; }
 			public string[] Models { get; set; }
+			public int[] GroupIds { get; set; }
 			public string[] Permissions { get; set; }
 			public string Secret { get; set; }
 			public TimeSpan SessionLength { get; set; }
