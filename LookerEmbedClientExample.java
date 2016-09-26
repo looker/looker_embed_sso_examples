@@ -28,7 +28,7 @@ public class LookerEmbedClientExample {
         try {
 
             String url = createURL(host, secret, externalUserID, firstName, lastName, permissions, models,
-                                   sessionLength, groupIds, accessFilters, embedURL, forceLoginLogout);
+                                   sessionLength, accessFilters, embedURL, forceLoginLogout, groupIds);
             System.out.println("https://" + url);
 
         } catch(Exception e){
@@ -38,8 +38,8 @@ public class LookerEmbedClientExample {
 
     public static String createURL(String host, String secret,
                                    String userID, String firstName, String lastName, String userPermissions,
-                                   String userModels, String sessionLength, String groupIds, String accessFilters,
-                                   String embedURL, String forceLoginLogout) throws Exception {
+                                   String userModels, String sessionLength, String accessFilters,
+                                   String embedURL, String forceLoginLogout, String groupIds) throws Exception {
 
         String path = "/login/embed/" + java.net.URLEncoder.encode(embedURL, "ISO-8859-1");
 
