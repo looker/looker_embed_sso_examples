@@ -1,4 +1,3 @@
-
 date_default_timezone_set('America/Los_Angeles');
 
 $secret = "<your_secret_here>";
@@ -15,9 +14,10 @@ $json_external_user_id = json_encode("<db_user_id>");
 $json_first_name = json_encode("<first_name>");
 $json_last_name = json_encode("<last_name>");
 $json_permissions = json_encode( array ( "see_user_dashboards", "see_lookml_dashboards", "access_data", "see_looks" ) );
-$json_models = json_encode( array ( <your_model_name> ) );
+$json_models = json_encode( array ( "<your_model_name>" ) );
+$json_group_ids = json_encode( array ( 4, 2 ) );  // just some example group ids
 $accessfilters = array (
-  <your_model_name>  =>  array ( "view_name.dimension_name" => <value> )
+  "<your_model_name>"  =>  array ( "view_name.dimension_name" => "<value>" )
 );
 $json_accessfilters = json_encode($accessfilters);
 
@@ -30,6 +30,7 @@ $stringtosign .= $json_session_length . "\n";
 $stringtosign .= $json_external_user_id . "\n";
 $stringtosign .= $json_permissions . "\n";
 $stringtosign .= $json_models . "\n";
+$stringtosign .= $json_group_ids . "\n";
 $stringtosign .= $json_accessfilters;
 
 $signature = trim(base64_encode(hash_hmac("sha1", utf8_encode($stringtosign), $secret, $raw_output = true)));
@@ -42,11 +43,12 @@ $queryparams = array (
     external_user_id  =>  $json_external_user_id,
     permissions =>  $json_permissions,
     models  =>  $json_models,
+    group_ids => $json_group_ids,
     access_filters  =>  $json_accessfilters,
     first_name  =>  $json_first_name,
     last_name =>  $json_last_name,
     force_logout_login  =>  false,
-    signature =>  $signature    
+    signature =>  $signature
 );
 
 $querystring = "";

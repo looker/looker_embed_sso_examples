@@ -14,13 +14,15 @@ class Looker:
 
 
 class User:
-  def __init__(self, id=id, first_name=None, last_name=None, permissions=[], models=[], access_filters={}):
+  def __init__(self, id=id, first_name=None, last_name=None,
+               permissions=[], models=[], group_ids=[], access_filters={}):
     self.external_user_id = json.dumps(id)
     self.first_name = json.dumps(first_name)
     self.last_name = json.dumps(last_name)
     self.permissions = json.dumps(permissions)
     self.models = json.dumps(models)
     self.access_filters = json.dumps(access_filters)
+    self.group_ids = json.dumps(group_ids)
 
 
 class URL:
@@ -47,6 +49,7 @@ class URL:
     string_to_sign = string_to_sign + self.user.external_user_id + "\n"
     string_to_sign = string_to_sign + self.user.permissions      + "\n"
     string_to_sign = string_to_sign + self.user.models           + "\n"
+    string_to_sign = string_to_sign + self.user.group_ids        + "\n"
     string_to_sign = string_to_sign + self.user.access_filters
 
     signer = hmac.new(self.looker.secret, string_to_sign.encode('utf8'), sha1)
@@ -63,6 +66,7 @@ class URL:
               'external_user_id':    self.user.external_user_id,
               'permissions':         self.user.permissions,
               'models':              self.user.models,
+              'group_ids':           self.user.group_ids,
               'access_filters':      self.user.access_filters,
               'signature':           self.signature,
               'first_name':          self.user.first_name,
@@ -82,6 +86,7 @@ def test():
               last_name='Krouse',
               permissions=['see_lookml_dashboards', 'access_data'],
               models=['wilg_thelook'],
+              group_ids=[5,4],
               access_filters={'fake_model': {'id': 1}})
 
   fifteen_minutes = 15 * 60
@@ -89,3 +94,6 @@ def test():
   url = URL(looker, user, fifteen_minutes, "/embed/sso/dashboards/wilg_thelook/1_business_pulse?date=Last+90+Days", force_logout_login=True)
 
   print "https://" + url.to_string()
+
+
+test()

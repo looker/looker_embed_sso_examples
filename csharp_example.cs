@@ -24,8 +24,9 @@ namespace SSOTest
 				UserLastName = "User",
 				Permissions = new string[] {"explore", "see_user_dashboards", "see_lookml_dashboards","access_data","see_looks", "download_with_limit"},
 				Models = new string[] { "imdb" },
+				GroupIds = new int[] {4, 2},
 			};
-			
+
 			var url = GetLookerEmbedUrl("/embed/dashboards/1", config);
 
 			Console.WriteLine(url.AbsoluteUri);
@@ -42,13 +43,14 @@ namespace SSOTest
 			public string UserLastName { get; set; }
 			public bool ForceLogoutLogin { get; set; }
 			public string[] Models { get; set; }
+			public int[] GroupIds { get; set; }
 			public string[] Permissions { get; set; }
 			public string Secret { get; set; }
 			public TimeSpan SessionLength { get; set; }
 			public string HostName { get; set; }
 			public int HostPort { get; set; }
 			public string Nonce { get; set; }
-		
+
 			public LookerEmbedConfiguration()
 			{
 				ForceLogoutLogin = true;
@@ -74,20 +76,22 @@ namespace SSOTest
 			var json_nonce = JsonConvert.SerializeObject(config.Nonce);
 			var json_external_user_id = JsonConvert.SerializeObject(config.ExternalUserId);
 			var json_permissions = JsonConvert.SerializeObject(config.Permissions);
+			var json_group_ids = JsonConvert.SerializeObject(config.GroupIds);
 			var json_models = JsonConvert.SerializeObject(config.Models);
 			var json_session_length = String.Format("{0:N0}", (long)config.SessionLength.TotalSeconds);
 
 			// order of elements is important
 			var stringToSign = String.Join("\n", new string[] {
 				builder.Uri.Authority,
-				builder.Path, 
+				builder.Path,
 				json_nonce,
 				time,
 				json_session_length,
 				json_external_user_id,
 				json_permissions,
 				json_models,
-				config.AccessFilters			
+				json_group_ids,
+				config.AccessFilters
 			});
 
 			var signature = EncodeString(stringToSign, config.Secret);
@@ -97,13 +101,14 @@ namespace SSOTest
 			var json_force_logout_login = JsonConvert.SerializeObject(config.ForceLogoutLogin);
 
 			var qparams = new Dictionary<string, string>()
-			{ 
+			{
 				{ "nonce", json_nonce },
 				{ "time", time },
 				{ "session_length", json_session_length },
 				{ "external_user_id", json_external_user_id },
 				{ "permissions", json_permissions },
 				{ "models", json_models },
+				{ "group_ids", json_group_ids },
 				{ "access_filters", config.AccessFilters},
 				{ "first_name", json_first_name },
 				{ "last_name", json_last_name },
