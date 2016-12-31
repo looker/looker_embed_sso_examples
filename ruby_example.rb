@@ -18,6 +18,7 @@ module LookerEmbedClient
     json_permissions        = options[:permissions].to_json
     json_models             = options[:models].to_json
     json_group_ids          = options[:group_ids].to_json
+    json_user_attributes    = options[:user_attributes].to_json
     json_access_filters     = options[:access_filters].to_json
 
     # url/session specific options
@@ -32,7 +33,8 @@ module LookerEmbedClient
     # compute signature
     string_to_sign  = [host, embed_path, json_nonce, json_time,
                        json_session_length, json_external_user_id, json_permissions,
-                       json_models, json_group_ids, json_access_filters].join("\n")
+                       json_models, json_group_ids, json_user_attributes,
+                       json_access_filters].join("\n")
 
     signature = Base64.encode64(
                    OpenSSL::HMAC.digest(
@@ -49,6 +51,7 @@ module LookerEmbedClient
       permissions:         json_permissions,
       models:              json_models,
       group_ids:           json_group_ids,
+      user_attributes:     json_user_attributes,
       access_filters:      json_access_filters,
       first_name:          json_first_name,
       last_name:           json_last_name,
@@ -73,6 +76,7 @@ def sample
                permissions:        ['see_user_dashboards', 'see_lookml_dashboards', 'access_data', 'see_looks'],
                models:             ['wilg_thelook'],
                group_ids:          [5, 2],
+               user_attributes:    {"an_attribute_name" => "my_value", "my_number_attribute" => "0.231"},
                access_filters:     {:fake_model => {:id => 1}},
                session_length:     fifteen_minutes,
                embed_url:          "/embed/sso/dashboards/1",
@@ -82,3 +86,5 @@ def sample
   url = LookerEmbedClient::created_signed_embed_url(url_data)
   puts "https://#{url}"
 end
+
+sample()
