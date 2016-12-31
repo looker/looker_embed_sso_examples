@@ -14,6 +14,9 @@ namespace SSOTest
 	{
 		static void Main(string[] args)
 		{
+			var user_attributes = new Dictionary<string, string>();
+			user_attributes["an_attribute_name"] = "my_attribute_value";
+			user_attributes["my_number_attribute"] = "1000.232";
 			var config = new LookerEmbedConfiguration()
 			{
 				HostName = "your-hostname.looker.com",
@@ -25,6 +28,7 @@ namespace SSOTest
 				Permissions = new string[] {"explore", "see_user_dashboards", "see_lookml_dashboards","access_data","see_looks", "download_with_limit"},
 				Models = new string[] { "imdb" },
 				GroupIds = new int[] {4, 2},
+				UserAttributeMapping = user_attributes
 			};
 
 			var url = GetLookerEmbedUrl("/embed/dashboards/1", config);
@@ -45,6 +49,7 @@ namespace SSOTest
 			public string[] Models { get; set; }
 			public int[] GroupIds { get; set; }
 			public string[] Permissions { get; set; }
+			public Dictionary<string, string> UserAttributeMapping { get; set; }
 			public string Secret { get; set; }
 			public TimeSpan SessionLength { get; set; }
 			public string HostName { get; set; }
@@ -77,6 +82,7 @@ namespace SSOTest
 			var json_external_user_id = JsonConvert.SerializeObject(config.ExternalUserId);
 			var json_permissions = JsonConvert.SerializeObject(config.Permissions);
 			var json_group_ids = JsonConvert.SerializeObject(config.GroupIds);
+			var json_user_attribute_values = JsonConvert.SerializeObject(config.UserAttributeMapping);
 			var json_models = JsonConvert.SerializeObject(config.Models);
 			var json_session_length = String.Format("{0:N0}", (long)config.SessionLength.TotalSeconds);
 
@@ -91,6 +97,7 @@ namespace SSOTest
 				json_permissions,
 				json_models,
 				json_group_ids,
+				json_user_attribute_values,
 				config.AccessFilters
 			});
 
@@ -109,6 +116,7 @@ namespace SSOTest
 				{ "permissions", json_permissions },
 				{ "models", json_models },
 				{ "group_ids", json_group_ids },
+				{ "user_attributes", json_user_attribute_values },
 				{ "access_filters", config.AccessFilters},
 				{ "first_name", json_first_name },
 				{ "last_name", json_last_name },
