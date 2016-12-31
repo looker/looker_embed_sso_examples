@@ -24,11 +24,12 @@ public class LookerEmbedClientExample {
         String embedURL = "/embed/sso/dashboards/3";
         String forceLoginLogout = "true"; // converted to JSON bool
         String accessFilters = ("{\"thelook\": {\"dimension_a\": 1}}");  // converted to JSON Object of Objects
+        String userAttributes = "{\"an_attribute_name\": \"my_attribute_value\", \"my_number_attribute\": \"42\"}";  // A Map<String, String> converted to JSON object
 
         try {
 
             String url = createURL(host, secret, externalUserID, firstName, lastName, permissions, models,
-                                   sessionLength, accessFilters, embedURL, forceLoginLogout, groupIds);
+                                   sessionLength, accessFilters, embedURL, forceLoginLogout, groupIds, userAttributes);
             System.out.println("https://" + url);
 
         } catch(Exception e){
@@ -39,7 +40,7 @@ public class LookerEmbedClientExample {
     public static String createURL(String host, String secret,
                                    String userID, String firstName, String lastName, String userPermissions,
                                    String userModels, String sessionLength, String accessFilters,
-                                   String embedURL, String forceLoginLogout, String groupIds) throws Exception {
+                                   String embedURL, String forceLoginLogout, String groupIds, String userAttributes) throws Exception {
 
         String path = "/login/embed/" + java.net.URLEncoder.encode(embedURL, "ISO-8859-1");
 
@@ -61,6 +62,7 @@ public class LookerEmbedClientExample {
         urlToSign += userPermissions + "\n";
         urlToSign += userModels + "\n";
         urlToSign += groupIds + "\n";
+        urlToSign += userAttributes + "\n";
         urlToSign += accessFilters;
 
         String signature =  encodeString(urlToSign, secret);
@@ -77,6 +79,7 @@ public class LookerEmbedClientExample {
                 "&first_name="         + java.net.URLEncoder.encode(firstName, "ISO-8859-1") +
                 "&last_name="          + java.net.URLEncoder.encode(lastName, "ISO-8859-1") +
                 "&group_ids="          + java.net.URLEncoder.encode(groupIds, "ISO-8859-1") +
+                "&user_attributes="    + java.net.URLEncoder.encode(userAttributes, "ISO-8859-1") +
                 "&force_logout_login=" + java.net.URLEncoder.encode(forceLoginLogout, "ISO-8859-1");
 
         return host + path + '?' + signedURL;
