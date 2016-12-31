@@ -1,3 +1,4 @@
+<?php
 date_default_timezone_set('America/Los_Angeles');
 
 $secret = "<your_secret_here>";
@@ -16,6 +17,7 @@ $json_last_name = json_encode("<last_name>");
 $json_permissions = json_encode( array ( "see_user_dashboards", "see_lookml_dashboards", "access_data", "see_looks" ) );
 $json_models = json_encode( array ( "<your_model_name>" ) );
 $json_group_ids = json_encode( array ( 4, 2 ) );  // just some example group ids
+$json_user_attributes = json_encode( array ( "an_attribute_name" => "my_value", "my_number_attribute" => "0.231" ) );  // just some example attributes
 $accessfilters = array (
   "<your_model_name>"  =>  array ( "view_name.dimension_name" => "<value>" )
 );
@@ -31,6 +33,7 @@ $stringtosign .= $json_external_user_id . "\n";
 $stringtosign .= $json_permissions . "\n";
 $stringtosign .= $json_models . "\n";
 $stringtosign .= $json_group_ids . "\n";
+$stringtosign .= $json_user_attributes . "\n";
 $stringtosign .= $json_accessfilters;
 
 $signature = trim(base64_encode(hash_hmac("sha1", utf8_encode($stringtosign), $secret, $raw_output = true)));
@@ -44,6 +47,7 @@ $queryparams = array (
     permissions =>  $json_permissions,
     models  =>  $json_models,
     group_ids => $json_group_ids,
+    user_attributes => $json_user_attributes,
     access_filters  =>  $json_accessfilters,
     first_name  =>  $json_first_name,
     last_name =>  $json_last_name,
@@ -64,3 +68,5 @@ foreach ($queryparams as $key => $value) {
 
 $final = "https://" . $host . $path . "?" . $querystring;
 echo $final;
+echo "\n";
+?>
