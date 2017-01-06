@@ -40,19 +40,19 @@ $signature = trim(base64_encode(hash_hmac("sha1", utf8_encode($stringtosign), $s
 // , $raw_output = true
 
 $queryparams = array (
-    nonce =>  $json_nonce,
-    time  =>  $json_current_time,
-    session_length  =>  $json_session_length,
-    external_user_id  =>  $json_external_user_id,
-    permissions =>  $json_permissions,
-    models  =>  $json_models,
-    group_ids => $json_group_ids,
-    user_attributes => $json_user_attributes,
-    access_filters  =>  $json_accessfilters,
-    first_name  =>  $json_first_name,
-    last_name =>  $json_last_name,
-    force_logout_login  =>  false,
-    signature =>  $signature
+    'nonce' =>  $json_nonce,
+    'time'  =>  $json_current_time,
+    'session_length'  =>  $json_session_length,
+    'external_user_id'  =>  $json_external_user_id,
+    'permissions' =>  $json_permissions,
+    'models'  =>  $json_models,
+    'group_ids' => $json_group_ids,
+    'user_attributes' => $json_user_attributes,
+    'access_filters'  =>  $json_accessfilters,
+    'first_name'  =>  $json_first_name,
+    'last_name' =>  $json_last_name,
+    'force_logout_login'  =>  false,
+    'signature' =>  $signature
 );
 
 $querystring = "";
