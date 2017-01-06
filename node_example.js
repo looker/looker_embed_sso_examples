@@ -27,7 +27,7 @@ function created_signed_embed_url(options) {
     var json_permissions = JSON.stringify(options.permissions);
     var json_models = JSON.stringify(options.models);
     var json_group_ids = JSON.stringify(options.group_ids || []);
-    var json_user_attributes = JSON.stringify(options.user_attributes || []);
+    var json_user_attributes = JSON.stringify(options.user_attributes || {});
     var json_access_filters = JSON.stringify(options.access_filters);
 
     // url/session specific options
