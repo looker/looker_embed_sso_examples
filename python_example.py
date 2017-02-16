@@ -83,7 +83,7 @@ class URL:
 
 
 def test():
-  looker = Looker('localhost:9999', 'b167c4998c1faadf5bf7742675aa6018aaa2e296f2eec5442b208d2cb6fdf1bd')
+  looker = Looker('your_company.looker.com', 'b167c4998c1faadf5bf7742675aa6018aaa2e296f2eec5442b208d2cb6fdf1bd')
 
   user = User(57,
               first_name='Embed Wil',
