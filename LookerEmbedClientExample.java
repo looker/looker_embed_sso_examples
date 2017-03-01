@@ -19,7 +19,8 @@ public class LookerEmbedClientExample {
         String lastName = "\"Krouse\""; // converted to JSON string
         String permissions = "[\"see_user_dashboards\", \"see_lookml_dashboards\",\"access_data\",\"see_looks\"]"; // converted to JSON array
         String models = "[\"thelook\"]"; // converted to JSON array
-        String groupIds = "[5, 3]"; // converted to JSON array, can be set to null (value, not JSON) for no groups
+        String groupIDs = "[5, 3]"; // converted to JSON array, can be set to null (value, not JSON) for no groups
+        String externalGroupID = "\"awesome_engineers\"";  // converted to JSON string
         String sessionLength = "900";
         String embedURL = "/embed/sso/dashboards/3";
         String forceLoginLogout = "true"; // converted to JSON bool
@@ -29,7 +30,8 @@ public class LookerEmbedClientExample {
         try {
 
             String url = createURL(host, secret, externalUserID, firstName, lastName, permissions, models,
-                                   sessionLength, accessFilters, embedURL, forceLoginLogout, groupIds, userAttributes);
+                                   sessionLength, accessFilters, embedURL, forceLoginLogout, groupIDs,
+                                   externalGroupID, userAttributes);
             System.out.println("https://" + url);
 
         } catch(Exception e){
@@ -40,7 +42,8 @@ public class LookerEmbedClientExample {
     public static String createURL(String host, String secret,
                                    String userID, String firstName, String lastName, String userPermissions,
                                    String userModels, String sessionLength, String accessFilters,
-                                   String embedURL, String forceLoginLogout, String groupIds, String userAttributes) throws Exception {
+                                   String embedURL, String forceLoginLogout, String groupIDs,
+                                   String externalGroupID, String userAttributes) throws Exception {
 
         String path = "/login/embed/" + java.net.URLEncoder.encode(embedURL, "ISO-8859-1");
 
@@ -61,7 +64,8 @@ public class LookerEmbedClientExample {
         urlToSign += userID + "\n";
         urlToSign += userPermissions + "\n";
         urlToSign += userModels + "\n";
-        urlToSign += groupIds + "\n";
+        urlToSign += groupIDs + "\n";
+        urlToSign += externalGroupID + "\n";
         urlToSign += userAttributes + "\n";
         urlToSign += accessFilters;
 
@@ -78,7 +82,8 @@ public class LookerEmbedClientExample {
                 "&signature="          + java.net.URLEncoder.encode(signature, "ISO-8859-1") +
                 "&first_name="         + java.net.URLEncoder.encode(firstName, "ISO-8859-1") +
                 "&last_name="          + java.net.URLEncoder.encode(lastName, "ISO-8859-1") +
-                "&group_ids="          + java.net.URLEncoder.encode(groupIds, "ISO-8859-1") +
+                "&group_ids="          + java.net.URLEncoder.encode(groupIDs, "ISO-8859-1") +
+                "&external_group_id="  + java.net.URLEncoder.encode(externalGroupID, "ISO-8859-1") +
                 "&user_attributes="    + java.net.URLEncoder.encode(userAttributes, "ISO-8859-1") +
                 "&force_logout_login=" + java.net.URLEncoder.encode(forceLoginLogout, "ISO-8859-1");
 
