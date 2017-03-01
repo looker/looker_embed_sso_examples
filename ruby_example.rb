@@ -18,6 +18,7 @@ module LookerEmbedClient
     json_permissions        = options[:permissions].to_json
     json_models             = options[:models].to_json
     json_group_ids          = options[:group_ids].to_json
+    json_external_group_id  = options[:external_group_id].to_json
     json_user_attributes    = options[:user_attributes].to_json
     json_access_filters     = options[:access_filters].to_json
 
@@ -31,10 +32,22 @@ module LookerEmbedClient
     json_nonce              = SecureRandom.hex(16).to_json
 
     # compute signature
-    string_to_sign  = [host, embed_path, json_nonce, json_time,
-                       json_session_length, json_external_user_id, json_permissions,
-                       json_models, json_group_ids, json_user_attributes,
-                       json_access_filters].join("\n")
+    string_to_sign  = ""
+    string_to_sign += host                  + "\n"
+    string_to_sign += embed_path            + "\n"
+    string_to_sign += json_nonce            + "\n"
+    string_to_sign += json_time             + "\n"
+    string_to_sign += json_session_length   + "\n"
+    string_to_sign += json_external_user_id + "\n"
+    string_to_sign += json_permissions      + "\n"
+    string_to_sign += json_models           + "\n"
+
+    # optionally add settings not supported in older Looker versions
+    string_to_sign += json_group_ids        + "\n"  if options[:group_ids]
+    string_to_sign += json_external_group_id+ "\n"  if options[:external_group_id]
+    string_to_sign += json_user_attributes  + "\n"  if options[:user_attributes]
+
+    string_to_sign += json_access_filters
 
     signature = Base64.encode64(
                    OpenSSL::HMAC.digest(
@@ -50,14 +63,18 @@ module LookerEmbedClient
       external_user_id:    json_external_user_id,
       permissions:         json_permissions,
       models:              json_models,
-      group_ids:           json_group_ids,
-      user_attributes:     json_user_attributes,
       access_filters:      json_access_filters,
       first_name:          json_first_name,
       last_name:           json_last_name,
       force_logout_login:  json_force_logout_login,
       signature:           signature
     }
+    # add optional parts as appropriate
+    query_params[:group_ids] = json_group_ids if options[:group_ids]
+    query_params[:external_group_id] = json_external_group_id if options[:external_group_id]
+    query_params[:user_attributes] = json_user_attributes if options[:user_attributes]
+    query_params[:user_timezone] = options[:user_timezone].to_json if options.has_key?(:user_timezone)
+
     query_string = URI.encode_www_form(query_params)
 
     "#{host}#{embed_path}?#{query_string}"
@@ -74,12 +91,13 @@ def sample
                first_name:         'Embed Steve',
                last_name:          'Krouse',
                permissions:        ['see_user_dashboards', 'see_lookml_dashboards', 'access_data', 'see_looks'],
-               models:             ['wilg_thelook'],
+               models:             ['thelook'],
                group_ids:          [5, 2],
+               external_group_id:  'awesome_engineers',
                user_attributes:    {"an_attribute_name" => "my_value", "my_number_attribute" => "0.231"},
                access_filters:     {:fake_model => {:id => 1}},
                session_length:     fifteen_minutes,
-               embed_url:          "/embed/sso/dashboards/1",
+               embed_url:          "/embed/sso/dashboards/3",
                force_logout_login: true
              }
 

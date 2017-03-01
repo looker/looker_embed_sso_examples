@@ -26,7 +26,8 @@ function created_signed_embed_url(options) {
     var json_last_name = JSON.stringify(options.last_name);
     var json_permissions = JSON.stringify(options.permissions);
     var json_models = JSON.stringify(options.models);
-    var json_group_ids = JSON.stringify(options.group_ids || []);
+    var json_group_ids = JSON.stringify(options.group_ids);
+    var json_external_group_id = JSON.stringify(options.external_group_id || "");
     var json_user_attributes = JSON.stringify(options.user_attributes || {});
     var json_access_filters = JSON.stringify(options.access_filters);
 
@@ -50,6 +51,7 @@ function created_signed_embed_url(options) {
     string_to_sign += json_permissions + "\n";
     string_to_sign += json_models + "\n";
     string_to_sign += json_group_ids + "\n";
+    string_to_sign += json_external_group_id + "\n";
     string_to_sign += json_user_attributes + "\n";
     string_to_sign += json_access_filters;
 
@@ -67,6 +69,7 @@ function created_signed_embed_url(options) {
         first_name: json_first_name,
         last_name: json_last_name,
         group_ids: json_group_ids,
+        external_group_id: json_external_group_id,
         user_attributes: json_user_attributes,
         force_logout_login: json_force_logout_login,
         signature: signature
@@ -87,6 +90,7 @@ function sample() {
         first_name: 'Embed Steve',
         last_name: 'Krouse',
         group_ids: [4],
+        external_group_id: 'awesome_engineers',
         permissions: ['see_user_dashboards', 'see_lookml_dashboards', 'access_data', 'see_looks'],
         models: ['thelook'],
         access_filters: {
@@ -96,7 +100,7 @@ function sample() {
         },
         user_attributes: {"an_attribute_name": "my_attribute_value", "my_number_attribute": "42"},
         session_length: fifteen_minutes,
-        embed_url: "/embed/sso/dashboards/1",
+        embed_url: "/embed/sso/dashboards/3",
         force_logout_login: true
     };
 

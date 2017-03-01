@@ -28,6 +28,7 @@ namespace SSOTest
 				Permissions = new string[] {"explore", "see_user_dashboards", "see_lookml_dashboards","access_data","see_looks", "download_with_limit"},
 				Models = new string[] { "imdb" },
 				GroupIds = new int[] {4, 2},
+				ExternalGroupId = "awesome_engineers",
 				UserAttributeMapping = user_attributes
 			};
 
@@ -48,6 +49,7 @@ namespace SSOTest
 			public bool ForceLogoutLogin { get; set; }
 			public string[] Models { get; set; }
 			public int[] GroupIds { get; set; }
+			public string ExternalGroupId { get; set; }
 			public string[] Permissions { get; set; }
 			public Dictionary<string, string> UserAttributeMapping { get; set; }
 			public string Secret { get; set; }
@@ -82,6 +84,7 @@ namespace SSOTest
 			var json_external_user_id = JsonConvert.SerializeObject(config.ExternalUserId);
 			var json_permissions = JsonConvert.SerializeObject(config.Permissions);
 			var json_group_ids = JsonConvert.SerializeObject(config.GroupIds);
+			var json_external_group_id = JsonConvert.SerializeObject(config.ExternalGroupId);
 			var json_user_attribute_values = JsonConvert.SerializeObject(config.UserAttributeMapping);
 			var json_models = JsonConvert.SerializeObject(config.Models);
 			var json_session_length = String.Format("{0:N0}", (long)config.SessionLength.TotalSeconds);
@@ -97,6 +100,7 @@ namespace SSOTest
 				json_permissions,
 				json_models,
 				json_group_ids,
+				json_external_group_id,
 				json_user_attribute_values,
 				config.AccessFilters
 			});
@@ -116,6 +120,7 @@ namespace SSOTest
 				{ "permissions", json_permissions },
 				{ "models", json_models },
 				{ "group_ids", json_group_ids },
+				{ "external_group_id", json_external_group_id },
 				{ "user_attributes", json_user_attribute_values },
 				{ "access_filters", config.AccessFilters},
 				{ "first_name", json_first_name },
