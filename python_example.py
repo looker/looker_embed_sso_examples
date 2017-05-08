@@ -58,7 +58,7 @@ class URL:
     string_to_sign = string_to_sign + self.user.access_filters
 
     signer = hmac.new(self.looker.secret, string_to_sign.encode('utf8'), sha1)
-    self.signature = base64.b64encode(signer.digest().rstrip('\n'))
+    self.signature = base64.b64encode(signer.digest())
 
   def to_string(self):
     self.set_time()
