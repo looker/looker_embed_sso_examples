@@ -97,7 +97,7 @@ def sample
                user_attributes:    {"an_attribute_name" => "my_value", "my_number_attribute" => "0.231"},
                access_filters:     {:fake_model => {:id => 1}},
                session_length:     fifteen_minutes,
-               embed_url:          "/embed/sso/dashboards/3",
+               embed_url:          "/embed/dashboards/3",
                force_logout_login: true
              }
 
