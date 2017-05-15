@@ -22,7 +22,7 @@ public class LookerEmbedClientExample {
         String groupIDs = "[5, 3]"; // converted to JSON array, can be set to null (value, not JSON) for no groups
         String externalGroupID = "\"awesome_engineers\"";  // converted to JSON string
         String sessionLength = "900";
-        String embedURL = "/embed/sso/dashboards/3";
+        String embedURL = "/embed/dashboards/3";
         String forceLoginLogout = "true"; // converted to JSON bool
         String accessFilters = ("{\"thelook\": {\"dimension_a\": 1}}");  // converted to JSON Object of Objects
         String userAttributes = "{\"an_attribute_name\": \"my_attribute_value\", \"my_number_attribute\": \"42\"}";  // A Map<String, String> converted to JSON object
