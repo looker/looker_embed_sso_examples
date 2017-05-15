@@ -100,7 +100,7 @@ function sample() {
         },
         user_attributes: {"an_attribute_name": "my_attribute_value", "my_number_attribute": "42"},
         session_length: fifteen_minutes,
-        embed_url: "/embed/sso/dashboards/3",
+        embed_url: "/embed/dashboards/3",
         force_logout_login: true
     };
 
