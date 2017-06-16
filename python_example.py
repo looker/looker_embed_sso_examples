@@ -43,6 +43,7 @@ class URL:
     self.nonce = json.dumps(binascii.hexlify(os.urandom(16)))
 
   def sign(self):
+    #  Do not change the order of these
     string_to_sign = ""
     string_to_sign = string_to_sign + self.looker.host           + "\n"
     string_to_sign = string_to_sign + self.path                  + "\n"
