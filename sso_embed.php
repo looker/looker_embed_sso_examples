@@ -21,7 +21,7 @@ $json_external_group_id = json_encode("awesome_engineers");
 $json_user_attributes = json_encode( array ( "an_attribute_name" => "my_value", "my_number_attribute" => "0.231" ) );  // just some example attributes
 // NOTE: accessfilters must be present and be a json hash. If you don't need access filters then the php
 // way to make an empty json hash as an alternative to the below seems to be:
-// $accessfilters = new ArrayObject()
+// $accessfilters = new stdClass()
 $accessfilters = array (
   "<your_model_name>"  =>  array ( "view_name.dimension_name" => "<value>" )
 );
