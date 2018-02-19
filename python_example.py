@@ -15,8 +15,24 @@ class Looker:
 
 class User:
   def __init__(self, id=id, first_name=None, last_name=None,
-               permissions=[], models=[], group_ids=[], external_group_id=None,
-               user_attributes={}, access_filters={}):
+               permissions=None, models=None, group_ids=None, external_group_id=None,
+               user_attributes=None, access_filters=None):
+    
+    if permissions is None:
+        permissions = []
+    
+    if models is None:
+        models = []
+    
+    if group_ids is None:
+        group_ids = []
+        
+    if user_attributes is None:
+        user_attributes = {}
+        
+    if access_filters is None:
+        access_filters = {}
+    
     self.external_user_id = json.dumps(id)
     self.first_name = json.dumps(first_name)
     self.last_name = json.dumps(last_name)
