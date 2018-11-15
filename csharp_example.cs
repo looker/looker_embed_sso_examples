@@ -32,9 +32,9 @@ namespace SSOTest
 				UserAttributeMapping = user_attributes
 			};
 
-			var url = GetLookerEmbedUrl("/embed/dashboards/1", config);
+			string url = GetLookerEmbedUrl("/embed/dashboards/1", config);
 
-			Console.WriteLine(url.AbsoluteUri);
+			Console.WriteLine(url);
 			Console.ReadLine();
 		}
 
@@ -69,17 +69,20 @@ namespace SSOTest
 
 		public static Uri GetLookerEmbedUrl(string targetPath, LookerEmbedConfiguration config)
 		{
-			var builder = new UriBuilder
-			{
-				Scheme = "https",
-				Host = config.HostName,
-				Port = config.HostPort,
-				Path = "/login/embed/" + System.Net.WebUtility.UrlEncode(targetPath)
-			};
+		  var uri = new UriBuilder
+		  {
+		    Scheme = "https",
+		    Host = config.HostName,
+		    Port = config.HostPort,
+		    Path = "/login/embed/"
+		  };
+
+		  var builder = new StringBuilder();
+		  builder.AppendFormat("{0}://{1}{2}{3}", uri.Scheme, uri.Uri.Authority, uri.Path,
+		    UrlEncodeForLooker(targetPath));
 
 			var unixTime = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 			var time = unixTime.ToString();
-
 			var json_nonce = JsonConvert.SerializeObject(config.Nonce);
 			var json_external_user_id = JsonConvert.SerializeObject(config.ExternalUserId);
 			var json_permissions = JsonConvert.SerializeObject(config.Permissions);
@@ -87,12 +90,12 @@ namespace SSOTest
 			var json_external_group_id = JsonConvert.SerializeObject(config.ExternalGroupId);
 			var json_user_attribute_values = JsonConvert.SerializeObject(config.UserAttributeMapping);
 			var json_models = JsonConvert.SerializeObject(config.Models);
-			var json_session_length = String.Format("{0:N0}", (long)config.SessionLength.TotalSeconds);
+			var json_session_length = ((long)config.SessionLength.TotalSeconds).ToString();
 
 			// order of elements is important
 			var stringToSign = String.Join("\n", new string[] {
-				builder.Uri.Authority,
-				builder.Path,
+			  uri.Uri.Authority,
+			  "/login/embed/" + UrlEncodeForLooker(targetPath),
 				json_nonce,
 				time,
 				json_session_length,
@@ -129,12 +132,33 @@ namespace SSOTest
 				{ "signature", signature }
 			};
 
-			builder.Query = String.Join("&", qparams.Select(kvp => kvp.Key + "=" + System.Net.WebUtility.UrlEncode(kvp.Value)));
+		  builder.Append("?");
+		  builder.Append(string.Join("&", qparams.Select(kvp => kvp.Key + "=" + (UrlEncodeForLooker(kvp.Value)))));
 
-			return builder.Uri;
+		  return builder.ToString();
 		}
 
-		private static string EncodeString(string urlToSign, string secret)
+	  /// <summary>
+	  /// Looker's URL encoding REQUIRES hex numbers to be uppercase: %2F, not %2f.
+	  /// So, we use a custom url encoder; dotnet's built-in one emits lower case hex.
+	  /// Looker gacks on that.
+	  /// <remarks>WTF?</remarks>
+	  /// </summary>
+	  /// <param name="i">string to UrlEncodeForLooker</param>
+	  /// <returns>encoded string</returns>
+	  private static string UrlEncodeForLooker(string i)
+	  {
+	    var b = new StringBuilder();
+	    foreach (var c in i)
+	    {
+	      if (char.IsLetterOrDigit(c)) b.Append(c);
+	      else b.Append('%').Append(((int)c).ToString("X"));
+	    }
+
+	    return b.ToString();
+	  }
+
+	  private static string EncodeString(string urlToSign, string secret)
 		{
 			var bytes = Encoding.UTF8.GetBytes(secret);
 			var stringToEncode = Encoding.UTF8.GetBytes(urlToSign);
