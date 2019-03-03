@@ -87,7 +87,7 @@ namespace SSOTest
 			var json_external_group_id = JsonConvert.SerializeObject(config.ExternalGroupId);
 			var json_user_attribute_values = JsonConvert.SerializeObject(config.UserAttributeMapping);
 			var json_models = JsonConvert.SerializeObject(config.Models);
-			var json_session_length = String.Format("{0:N0}", (long)config.SessionLength.TotalSeconds);
+			var json_session_length = String.Format("{0:D}", (long)config.SessionLength.TotalSeconds);
 
 			// order of elements is important
 			var stringToSign = String.Join("\n", new string[] {
