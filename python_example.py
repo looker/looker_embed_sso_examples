@@ -5,7 +5,19 @@ import time
 import binascii
 import os
 from hashlib import sha1
+import six
+import six.moves.urllib as urllib
 import hmac
+
+
+
+def to_ascii(s):
+  """Compatibility function for converting between Python 2.7 and 3 calls"""
+  if isinstance(s, six.text_type):
+    return s
+  elif isinstance(s, six.binary_type):
+    return "".join(map(chr, map(ord, s.decode(encoding='UTF-8'))))
+  return s
 
 class Looker:
   def __init__(self, host, secret):
@@ -32,7 +44,7 @@ class URL:
   def __init__(self, looker, user, session_length, embed_url, force_logout_login=False):
     self.looker = looker
     self.user = user
-    self.path = '/login/embed/' + urllib.quote_plus(embed_url)
+    self.path = '/login/embed/' + urllib.parse.quote_plus(embed_url)
     self.session_length = json.dumps(session_length)
     self.force_logout_login = json.dumps(force_logout_login)
 
@@ -40,25 +52,24 @@ class URL:
     self.time = json.dumps(int(time.time()))
 
   def set_nonce(self):
-    self.nonce = json.dumps(binascii.hexlify(os.urandom(16)))
+    self.nonce = json.dumps(to_ascii(binascii.hexlify(os.urandom(16))))
 
   def sign(self):
     #  Do not change the order of these
-    string_to_sign = ""
-    string_to_sign = string_to_sign + self.looker.host           + "\n"
-    string_to_sign = string_to_sign + self.path                  + "\n"
-    string_to_sign = string_to_sign + self.nonce                 + "\n"
-    string_to_sign = string_to_sign + self.time                  + "\n"
-    string_to_sign = string_to_sign + self.session_length        + "\n"
-    string_to_sign = string_to_sign + self.user.external_user_id + "\n"
-    string_to_sign = string_to_sign + self.user.permissions      + "\n"
-    string_to_sign = string_to_sign + self.user.models           + "\n"
-    string_to_sign = string_to_sign + self.user.group_ids        + "\n"
-    string_to_sign = string_to_sign + self.user.external_group_id + "\n"
-    string_to_sign = string_to_sign + self.user.user_attributes  + "\n"
-    string_to_sign = string_to_sign + self.user.access_filters
+    string_to_sign = "\n".join([self.looker.host,
+                                self.path,
+                                self.nonce,
+                                self.time,
+                                self.session_length,
+                                self.user.external_user_id,
+                                self.user.permissions,
+                                self.user.models,
+                                self.user.group_ids,
+                                self.user.external_group_id,
+                                self.user.user_attributes,
+                                self.user.access_filters])
 
-    signer = hmac.new(self.looker.secret, string_to_sign.encode('utf8'), sha1)
+    signer = hmac.new(bytearray(self.looker.secret, 'UTF-8'), string_to_sign.encode('UTF-8'), sha1)
     self.signature = base64.b64encode(signer.digest())
 
   def to_string(self):
@@ -81,7 +92,7 @@ class URL:
               'last_name':           self.user.last_name,
               'force_logout_login':  self.force_logout_login}
 
-    query_string = '&'.join(["%s=%s" % (key, urllib.quote_plus(val)) for key, val in params.iteritems()])
+    query_string = '&'.join(["%s=%s" % (key, urllib.parse.quote_plus(val)) for key, val in params.items()])
 
     return "%s%s?%s" % (self.looker.host, self.path, query_string)
 
@@ -103,7 +114,7 @@ def test():
 
   url = URL(looker, user, fifteen_minutes, "/embed/dashboards/3", force_logout_login=True)
 
-  print "https://" + url.to_string()
+  print("https://" + url.to_string())
 
 
 test()

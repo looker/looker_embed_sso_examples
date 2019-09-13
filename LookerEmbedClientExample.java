@@ -45,7 +45,7 @@ public class LookerEmbedClientExample {
                                    String embedURL, String forceLoginLogout, String groupIDs,
                                    String externalGroupID, String userAttributes) throws Exception {
 
-        String path = "/login/embed/" + java.net.URLEncoder.encode(embedURL, "ISO-8859-1");
+        String path = "/login/embed/" + java.net.URLEncoder.encode(embedURL, "UTF-8");
 
 
 
@@ -72,20 +72,20 @@ public class LookerEmbedClientExample {
         String signature =  encodeString(urlToSign, secret);
 
         // you need to %20-encode each parameter before you add to the URL
-        String signedURL = "nonce="    + java.net.URLEncoder.encode(nonce, "ISO-8859-1") +
-                "&time="               + java.net.URLEncoder.encode(time, "ISO-8859-1") +
-                "&session_length="     + java.net.URLEncoder.encode(sessionLength, "ISO-8859-1") +
-                "&external_user_id="   + java.net.URLEncoder.encode(userID, "ISO-8859-1") +
-                "&permissions="        + java.net.URLEncoder.encode(userPermissions, "ISO-8859-1") +
-                "&models="             + java.net.URLEncoder.encode(userModels, "ISO-8859-1") +
-                "&access_filters="     + java.net.URLEncoder.encode(accessFilters, "ISO-8859-1") +
-                "&signature="          + java.net.URLEncoder.encode(signature, "ISO-8859-1") +
-                "&first_name="         + java.net.URLEncoder.encode(firstName, "ISO-8859-1") +
-                "&last_name="          + java.net.URLEncoder.encode(lastName, "ISO-8859-1") +
-                "&group_ids="          + java.net.URLEncoder.encode(groupIDs, "ISO-8859-1") +
-                "&external_group_id="  + java.net.URLEncoder.encode(externalGroupID, "ISO-8859-1") +
-                "&user_attributes="    + java.net.URLEncoder.encode(userAttributes, "ISO-8859-1") +
-                "&force_logout_login=" + java.net.URLEncoder.encode(forceLoginLogout, "ISO-8859-1");
+        String signedURL = "nonce="    + java.net.URLEncoder.encode(nonce, "UTF-8") +
+                "&time="               + java.net.URLEncoder.encode(time, "UTF-8") +
+                "&session_length="     + java.net.URLEncoder.encode(sessionLength, "UTF-8") +
+                "&external_user_id="   + java.net.URLEncoder.encode(userID, "UTF-8") +
+                "&permissions="        + java.net.URLEncoder.encode(userPermissions, "UTF-8") +
+                "&models="             + java.net.URLEncoder.encode(userModels, "UTF-8") +
+                "&access_filters="     + java.net.URLEncoder.encode(accessFilters, "UTF-8") +
+                "&signature="          + java.net.URLEncoder.encode(signature, "UTF-8") +
+                "&first_name="         + java.net.URLEncoder.encode(firstName, "UTF-8") +
+                "&last_name="          + java.net.URLEncoder.encode(lastName, "UTF-8") +
+                "&group_ids="          + java.net.URLEncoder.encode(groupIDs, "UTF-8") +
+                "&external_group_id="  + java.net.URLEncoder.encode(externalGroupID, "UTF-8") +
+                "&user_attributes="    + java.net.URLEncoder.encode(userAttributes, "UTF-8") +
+                "&force_logout_login=" + java.net.URLEncoder.encode(forceLoginLogout, "UTF-8");
 
         return host + path + '?' + signedURL;
 
