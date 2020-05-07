@@ -95,7 +95,7 @@ def sample
                group_ids:          [5, 2],
                external_group_id:  'awesome_engineers',
                user_attributes:    {"an_attribute_name" => "my_value", "my_number_attribute" => "0.231"},
-               access_filters:     {:fake_model => {:id => 1}},
+               access_filters:     {},
                session_length:     fifteen_minutes,
                embed_url:          "/embed/dashboards/3",
                force_logout_login: true
