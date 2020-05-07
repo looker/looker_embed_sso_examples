@@ -108,7 +108,7 @@ def test():
               group_ids=[5,4],
               external_group_id='awesome_engineers',
               user_attributes={"an_attribute_name": "my_attribute_value", "my_number_attribute": "42"},
-              access_filters={'fake_model': {'id': 1}})
+              access_filters={})
 
   fifteen_minutes = 15 * 60
 
