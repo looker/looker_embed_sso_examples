@@ -93,11 +93,7 @@ function sample() {
         external_group_id: 'awesome_engineers',
         permissions: ['see_user_dashboards', 'see_lookml_dashboards', 'access_data', 'see_looks'],
         models: ['thelook'],
-        access_filters: {
-            fake_model: {
-                id: 1
-            }
-        },
+        access_filters: {},
         user_attributes: {"an_attribute_name": "my_attribute_value", "my_number_attribute": "42"},
         session_length: fifteen_minutes,
         embed_url: "/embed/dashboards/3",
