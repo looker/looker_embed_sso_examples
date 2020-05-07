@@ -24,7 +24,7 @@ public class LookerEmbedClientExample {
         String sessionLength = "900";
         String embedURL = "/embed/dashboards/3";
         String forceLoginLogout = "true"; // converted to JSON bool
-        String accessFilters = ("{\"thelook\": {\"dimension_a\": 1}}");  // converted to JSON Object of Objects
+        String accessFilters = ("{}");  // converted to JSON Object of Objects
         String userAttributes = "{\"an_attribute_name\": \"my_attribute_value\", \"my_number_attribute\": \"42\"}";  // A Map<String, String> converted to JSON object
 
         try {
