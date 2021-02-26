@@ -74,7 +74,7 @@ namespace SSOTest
 				Scheme = "https",
 				Host = config.HostName,
 				Port = config.HostPort,
-				Path = "/login/embed/" + System.Net.WebUtility.UrlEncode(targetPath)
+				Path = "/embed/" + System.Net.WebUtility.UrlEncode(targetPath)
 			};
 
 			var unixTime = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
