@@ -56,7 +56,7 @@ class URL:
 
   def sign(self):
     #  Do not change the order of these
-    string_to_sign = "\n".join([self.looker.host,
+    string_to_sign = "\n".join(filter(None, [self.looker.host,
                                 self.path,
                                 self.nonce,
                                 self.time,
@@ -67,7 +67,7 @@ class URL:
                                 self.user.group_ids,
                                 self.user.external_group_id,
                                 self.user.user_attributes,
-                                self.user.access_filters])
+                                self.user.access_filters]))
 
     signer = hmac.new(bytearray(self.looker.secret, 'UTF-8'), string_to_sign.encode('UTF-8'), sha1)
     self.signature = base64.b64encode(signer.digest())
