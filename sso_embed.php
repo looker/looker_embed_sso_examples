@@ -67,7 +67,7 @@ foreach ($queryparams as $key => $value) {
     $querystring .= "&";
   }
   if ($key == "force_logout_login") {
-    $value = "true";
+    $value = $value ? "true" : "false";
   }
   $querystring .= "$key=" . urlencode($value);
 }
